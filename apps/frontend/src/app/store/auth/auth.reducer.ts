@@ -13,7 +13,7 @@ const initialState: any = {
 
 export const authReducer = createReducer(
     initialState,
-    on(AuthActions.login, (state) => ({ ...state, isLoading: true })),
+    on(AuthActions.login, (state) => ({ ...state, isLoading: true, error: null, })),
     on(AuthActions.loginSuccess, (state, { token }) => ({
         ...state,
         token: token,

@@ -10,14 +10,15 @@ import { encodePassword } from '../utils/bcrypt';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) { }
-  createUser(user) {
-    const hash = encodePassword(user.password);
-    const newUser = new this.userModel({ ...user, hash });
-    return newUser.save();
-  }
+    constructor(@InjectModel(User.name) private userModel: Model<User>) { }
+    async createUser(user) {
+        const hash = encodePassword(user.password);
+        const newUser = new this.userModel({ ...user, hash });
+        await newUser.save()
+        return newUser;
+    }
 
-  async findOne(username: string) {
-    return this.userModel.find(user => user.username === username);
-  }
+    async findOne(username: string) {
+        return this.userModel.find(user => user.username === username);
+    }
 }

@@ -13,7 +13,6 @@ import {
     constructor(private jwtService: JwtService) {}
   
     async canActivate(context: ExecutionContext): Promise<boolean> {
-        console.log("test")
 
       const request = context.switchToHttp().getRequest();
       const token = this.extractTokenFromHeader(request);

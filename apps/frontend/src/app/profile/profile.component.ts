@@ -28,20 +28,17 @@ export class ProfileComponent {
     ngOnInit() {
         this.store.pipe(
             take(1),
-            tap(user => console.log(user)),
             map((state: any) => state?.auth?.user),
             filter(user => user),
-            tap(user => console.log(user)),
             tap(user => this.userData = user),
             defaultIfEmpty(false),
             switchMap((user) => {
                 if (user) return of(user);
                 else return this.authService.getDataFromToken(localStorage.getItem('token') || '').pipe(
-                    tap(user => console.log(user)),
                     tap(user => this.userData = user)
                 );
             })
-        ).subscribe(() => console.log(this.userData));
+        ).subscribe();
     }
     logout() {
         this.store.dispatch(AuthActions.logout());

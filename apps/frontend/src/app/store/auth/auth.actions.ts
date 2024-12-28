@@ -1,6 +1,5 @@
 // auth.actions.ts
 import { createAction, props } from '@ngrx/store';
-console.log("in actions")
 export const login = createAction('[Auth] Login', props<{ username: any; password: any }>());
 export const loginSuccess = createAction('[Auth] Login Success', props<{ token: any }>());
 export const loginFailure = createAction('[Auth] Login Failure', props<{ error: any }>());

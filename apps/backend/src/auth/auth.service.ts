@@ -8,21 +8,16 @@ import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>,  private jwtService: JwtService) {}
+    constructor(@InjectModel(User.name) private userModel: Model<User>,  private jwtService: JwtService) {}
 
-  async signIn(username: string, pass: string): Promise<any> {
-    const user = await this.userModel.findOne({ username });
-    console.log("pass", pass);
-    console.log("user", user.hash);
-    if (verifyPassword(pass, user.hash)) {
-        console.log("Authenticated");
-        const payload = { sub: user._id, username: user.username, firstName: user.firstName, lastName: user.lastName, email: user.email };
-        const accessToken = await this.jwtService.signAsync(payload);
-        console.log(accessToken)
-        return { accessToken };
-    } else {
-        console.log("Not Authenticated");
-        throw new UnauthorizedException();
+    async signIn(username: string, pass: string): Promise<any> {
+        const user = await this.userModel.findOne({ username });
+        if (user && verifyPassword(pass, user.hash)) {
+            const payload = { sub: user._id, username: user.username, firstName: user.firstName, lastName: user.lastName, email: user.email };
+            const accessToken = await this.jwtService.signAsync(payload);
+            return { accessToken };
+        } else {
+            throw new UnauthorizedException();
+        }
     }
-  }
 }

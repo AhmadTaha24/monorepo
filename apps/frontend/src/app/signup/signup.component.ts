@@ -9,17 +9,17 @@ import { Store } from '@ngrx/store';
 import * as AuthActions from './../store/auth/auth.actions';
 
 @Component({
-  selector: 'app-signup',
-  imports: [
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
-    MatCardModule,
-    MatButtonModule,
-    ReactiveFormsModule
-  ],
-  templateUrl: './signup.component.html',
-  styleUrl: './signup.component.css'
+    selector: 'app-signup',
+    imports: [
+        MatFormFieldModule,
+        MatIconModule,
+        MatInputModule,
+        MatCardModule,
+        MatButtonModule,
+        ReactiveFormsModule
+    ],
+    templateUrl: './signup.component.html',
+    styleUrl: './signup.component.css'
 })
 export class SignupComponent {
     private store = inject(Store);
@@ -34,7 +34,6 @@ export class SignupComponent {
     });
 
     onSubmit() {
-        console.log(this.signupForm.value)
         this.store.dispatch(AuthActions.signup({ user: this.signupForm.value }));
     }
 }

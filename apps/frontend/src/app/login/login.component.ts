@@ -7,7 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { FormBuilder, ReactiveFormsModule, Validators  } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import * as AuthActions from './../store/auth/auth.actions';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, take, takeUntil } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
@@ -34,18 +34,18 @@ export class LoginComponent {
         password: ['', Validators.required]
     });
 
+    terminate = new Subject();
     onSubmit() {
-        const terminate = new Subject();
-        this.store.pipe(takeUntil(terminate)).subscribe((state)=>{
-            console.log(state, state.auth.token)
-            if (state.auth.token) {
-                this.store.dispatch(AuthActions.requestProfile({ token: state.auth.token }));
-                terminate.next('');
-            } else if(state.auth.error) {
-                this.snackbar.open("Incorrect username or password", '', { duration: 3000 });
-            }
-        })
         const { username, password } = this.loginForm.value;
         this.store.dispatch(AuthActions.login({username, password}));
+        this.store.pipe(takeUntil(this.terminate)).subscribe((state)=>{
+            if (state.auth.token) {
+                this.store.dispatch(AuthActions.requestProfile({ token: state.auth.token }));
+                this.terminate.next('');
+            } else if(state.auth.error == "Error: Unauthorized" && !state.auth.isAuthenticated) {
+                this.snackbar.open("Incorrect username or password", '', { duration: 3000 });
+                this.terminate.next('');
+            }
+        })
     }
 }

@@ -5,7 +5,6 @@ import { AuthService } from '../../services/auth.service'
 import * as AuthActions from './auth.actions';
 import { catchError, map, mergeMap, of, tap } from 'rxjs';
 import { Router } from '@angular/router';
-console.log("in auth effect")
 @Injectable()
 export class AuthEffects {
     private actions$ = inject(Actions);
@@ -18,6 +17,7 @@ login$ = createEffect(() =>
         mergeMap(({ username, password }) =>
             this.authService.login(username, password).pipe(
                 map((response: any) => AuthActions.loginSuccess({ token: response.accessToken })),
+                tap(res=>this.router.navigate(['/home'])),
                 catchError(error => of(AuthActions.loginFailure({ error: error.message })))
             )
         ))
@@ -27,12 +27,9 @@ signup$ = createEffect(() =>
     this.actions$.pipe(
         ofType(AuthActions.signup),
         mergeMap(({ user }) => this.authService.signup(user.username, user.firstName, user.lastName, user.email, user.password).pipe(
-            map((resposne: any) => {
-                console.log(resposne);
-                return resposne;
-            }),
+            map((resposne: any) => AuthActions.signupSuccess(resposne)),
             tap(() => this.router.navigate(['/login'])),
-            catchError(error => of(AuthActions.loginFailure({ error: error.message })))
+            catchError(error => of(AuthActions.signupFailure({ error: error.message })))
         ))
 ));
 
